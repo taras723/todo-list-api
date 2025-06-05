@@ -15,7 +15,6 @@ class TaskController extends Controller
     {
     }
 
-    // List tasks with filters and sorting
     public function index(): JsonResponse
     {
         $tasks = $this->service->getTasks(
@@ -24,13 +23,13 @@ class TaskController extends Controller
             priority: request()->query('priority'),
             search: request()->query('search'),
             sortBy: request()->query('sort_by', 'created_at'),
-            sortDirection: request()->query('sort_direction', 'asc')
+            sortDirection: request()->query('sort_direction', 'asc'),
+            secondarySortBy: request()->query('secondary_sort_by', 'priority'),
+            secondarySortDirection: request()->query('secondary_sort_direction', 'desc')
         );
-
         return response()->json($tasks);
     }
 
-    // Create a new task
     public function store(StoreTaskRequest $request): JsonResponse
     {
         $dto = new TaskDTO(
@@ -40,12 +39,10 @@ class TaskController extends Controller
             status: TaskStatus::from($request->input('status')),
             parent_id: $request->input('parent_id')
         );
-
         $task = $this->service->createTask($dto, auth()->id());
-        return response()->json($task, 201);
+        return response()->json($task->loadSubtasks(), 201);
     }
 
-    // Update an existing task
     public function update(UpdateTaskRequest $request, Task $task): JsonResponse
     {
         $dto = new TaskDTO(
@@ -55,12 +52,10 @@ class TaskController extends Controller
             status: TaskStatus::from($request->input('status')),
             parent_id: $request->input('parent_id')
         );
-
         $task = $this->service->updateTask($task, $dto, auth()->id());
-        return response()->json($task);
+        return response()->json($task->loadSubtasks());
     }
 
-    // Delete a task
     public function destroy(Task $task): JsonResponse
     {
         $this->service->deleteTask($task, auth()->id());

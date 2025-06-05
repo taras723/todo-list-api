@@ -45,7 +45,84 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Task'
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    RegisterRequest:
+      type: object
+      required: [name, email, password, password_confirmation]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        password_confirmation:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
 paths:
+  /register:
+    post:
+      summary: Register a new user and issue token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+  /login:
+    post:
+      summary: Authenticate user and issue token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
   /tasks:
     get:
       summary: List tasks with filters and sorting
@@ -73,6 +150,16 @@ paths:
             type: string
             enum: [created_at, completed_at, priority]
         - name: sort_direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: secondary_sort_by
+          in: query
+          schema:
+            type: string
+            enum: [created_at, completed_at, priority]
+        - name: secondary_sort_direction
           in: query
           schema:
             type: string
@@ -172,3 +259,14 @@ paths:
       responses:
         '204':
           description: Task deleted
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object

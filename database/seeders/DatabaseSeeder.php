@@ -28,5 +28,12 @@ class DatabaseSeeder extends Seeder
             'parent_id' => Task::first()->id,
             'status' => 'todo',
         ]);
+
+        // Create nested subtasks
+        Task::factory()->count(3)->create([
+            'user_id' => $user->id,
+            'parent_id' => Task::whereNotNull('parent_id')->first()->id,
+            'status' => 'todo',
+        ]);
     }
 }
