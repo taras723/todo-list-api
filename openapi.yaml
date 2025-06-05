@@ -1,0 +1,174 @@
+# OpenAPI specification for the Todo List API
+openapi: 3.1.0
+info:
+  title: Todo List API
+  version: 1.0.0
+  description: A RESTful API for managing tasks with nested subtasks
+servers:
+  - url: http://localhost/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        parent_id:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum: [todo, done]
+        priority:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        subtasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+paths:
+  /tasks:
+    get:
+      summary: List tasks with filters and sorting
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [todo, done]
+        - name: priority
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum: [created_at, completed_at, priority]
+        - name: sort_direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create a new task
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, priority, status]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                priority:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                status:
+                  type: string
+                  enum: [todo, done]
+                parent_id:
+                  type: integer
+                  nullable: true
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+  /tasks/{id}:
+    put:
+      summary: Update a task
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, priority, status]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                  nullable: true
+                priority:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                status:
+                  type: string
+                  enum: [todo, done]
+                parent_id:
+                  type: integer
+                  nullable: true
+      responses:
+        '200':
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+    delete:
+      summary: Delete a task
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Task deleted
