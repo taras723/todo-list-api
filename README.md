@@ -29,7 +29,7 @@ A RESTful API for managing tasks with nested subtasks, built with Laravel 10, PH
 ## Installation
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/your-username/todo-list-api.git
+   git clone https://github.com/taras723/todo-list-api.git
    cd todo-list-api
    ```
 2. **Install Dependencies**:
@@ -132,7 +132,7 @@ A RESTful API for managing tasks with nested subtasks, built with Laravel 10, PH
    git init
    git add .
    git commit -m "Initial commit"
-   git remote add origin https://github.com/your-username/todo-list-api.git
+   git remote add origin https://github.com/taras723/todo-list-api.git
    git push -u origin main
    ```
    Ensure `.env` is excluded via `.gitignore`.
