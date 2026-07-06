@@ -1,6 +1,6 @@
 # Todo List API
 
-A RESTful API for managing tasks with nested subtasks, built with Laravel 10, PHP 8.1, and MySQL. This API allows authenticated users to create, read, update, and delete tasks, with support for filtering, sorting, and unlimited subtask nesting.
+This Project is A RESTful API for managing tasks with nested subtasks, built with Laravel 10, PHP 8.1, and MySQL. This API allows authenticated users to create, read, update, and delete tasks, with support for filtering, sorting, and unlimited subtask nesting.
 
 ## Features
 - **User Authentication**: Register and login to obtain a Sanctum token.
