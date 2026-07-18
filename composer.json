@@ -1,10 +1,16 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "taras723/todo-list-api",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Professional RESTful API for managing tasks with nested subtasks. Built with Laravel 12, PHP 8.2, and MySQL with comprehensive authentication, filtering, and business logic.",
+    "keywords": ["laravel", "api", "todo", "task-management", "rest", "sanctum", "authentication", "nested-resources"],
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Taras",
+            "email": "serenedreammer@gmail.com"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
@@ -50,11 +56,21 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,log,frontend"
         ],
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "test:coverage": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test --coverage"
+        ],
+        "lint": [
+            "./vendor/bin/pint --test"
+        ],
+        "lint:fix": [
+            "./vendor/bin/pint"
         ]
     },
     "extra": {
