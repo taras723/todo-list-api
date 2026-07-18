@@ -1,12 +1,14 @@
-# Use PHP 8.1 with FPM
-FROM php:8.1-fpm
+# Use PHP 8.2 with FPM (aligned with composer.json requirement)
+FROM php:8.2-fpm-alpine
 
 # Install dependencies and PHP extensions
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    libzip-dev \
+RUN apk add --no-cache \
+    postgresql-dev \
+    zip \
     unzip \
-    && docker-php-ext-install pdo_mysql zip
+    git \
+    curl \
+    && docker-php-ext-install pdo_mysql pdo_pgsql zip
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -21,7 +23,8 @@ COPY . .
 RUN composer install --optimize-autoloader --no-dev
 
 # Set permissions for Laravel
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 # Expose port and start PHP-FPM
 EXPOSE 9000
